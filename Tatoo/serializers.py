@@ -3,11 +3,13 @@ from pyexpat import model
 from rest_framework import serializers
 from .models import *
 
+#FORMULARIO REGISTROS CITAS
 class CitasSerializer(serializers.ModelSerializer):
     class Meta:
         model = Citas
         fields= "__all__"
 
+# FORMULATIO REGISTRO PORTAFOLIO
 class PortafolioTatuadoresSerializers(serializers.ModelSerializer):
     class Meta:
         model= Portafolio_Tatuadores
@@ -18,7 +20,7 @@ class PortafolioTatuadoresSerializers(serializers.ModelSerializer):
         )
 
 
-# FORMULARIOS  REGISTROS
+# FORMULARIOS  REGISTROS USUARIOS
 
 class RegistroUsuariosSerializers(serializers.ModelSerializer):
     class Meta:
@@ -28,10 +30,9 @@ class RegistroUsuariosSerializers(serializers.ModelSerializer):
             'apellido',
             'telefono',
             'contraseña',
-            'email',
-            'rol'
+            'email'
         )
-
+# FORMULARIOS REGISTROS TATUADORES
 class RegistroTatuadoresSerializers(serializers.ModelSerializer):
     class Meta:
         model= RegistroTatuadores
@@ -45,16 +46,16 @@ class RegistroTatuadoresSerializers(serializers.ModelSerializer):
             'email',
             'descripcion',
             'experiencia',
-            'contraseña',
-            'rol'
+            'contraseña'
         )
 
+# REGISTRO DEPARTAMENTOS
 class RegistroDepartamentoserializers(serializers.ModelSerializer):
 
     class Meta:
         model = Departamentos
         fields= "__all__"
-
+#REGISTRO LOCALIDADES
 class RegistroLocalidadeserializers(serializers.ModelSerializer):
 
     class Meta:
