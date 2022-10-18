@@ -28,7 +28,8 @@ class RegistroUsuariosSerializers(serializers.ModelSerializer):
             'apellido',
             'telefono',
             'contraseña',
-            'email'
+            'email',
+            'rol'
         )
 
 class RegistroTatuadoresSerializers(serializers.ModelSerializer):
@@ -44,7 +45,8 @@ class RegistroTatuadoresSerializers(serializers.ModelSerializer):
             'email',
             'descripcion',
             'experiencia',
-            'contraseña'
+            'contraseña',
+            'rol'
         )
 
 class RegistroDepartamentoserializers(serializers.ModelSerializer):

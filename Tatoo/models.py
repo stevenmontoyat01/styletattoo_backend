@@ -1,4 +1,5 @@
 from datetime import datetime
+from email.policy import default
 from django.db import models
 from .choices import generos
 
@@ -21,6 +22,7 @@ class RegistroUsuarios (models.Model):
     telefono = models.TextField()
     email = models.TextField(max_length=90)
     contraseña = models.TextField(max_length=20)
+    rol = models.CharField(default='U',max_length=1)
     estado = models.CharField(default='A', max_length=1)
 
     def nombre_Usuario(self):
@@ -41,6 +43,7 @@ class RegistroTatuadores (models.Model):
     experiencia = models.CharField(max_length=3)
     descripcion=models.TextField(max_length=150,blank=True,default='')
     contraseña = models.TextField(max_length=20)
+    rol = models.CharField(default='T',max_length=1)
     estado = models.CharField(default='A', max_length=1)
 
     def nombre_Tatuador(self):
