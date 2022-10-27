@@ -1,28 +1,122 @@
-from distutils.command.config import config
-from rest_framework import viewsets
-from .models import *
-from .serializers import *
-from django.shortcuts import render
+# Libraries
+from ast import Return
+from http.client import ResponseNotReady
+from os import stat
+import re
+from unicodedata import name
+from urllib import request, response
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status,generics,viewsets
+from django.contrib.auth import authenticate
+from rest_framework.decorators import api_view, APIView
+from .tokens import User, create_jwt_pair_for_user
+from django.shortcuts import get_list_or_404
+from rest_framework.decorators import action
 
-class CitasViewsets(viewsets.ModelViewSet):
-    queryset = Citas.objects.all()
-    serializer_class = CitasSerializer
+# Models and serializers
+from . import models,serializers
 
-class PortafolioTatuadoresViewsets(viewsets.ModelViewSet):
-    queryset=Portafolio_Tatuadores.objects.all()
-    serializer_class=PortafolioTatuadoresSerializers
-class RegistroUsuarioViewsets(viewsets.ModelViewSet):
-    queryset=RegistroUsuarios.objects.all()
-    serializer_class=RegistroUsuariosSerializers
+#-------------------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------------------#
 
-class RegistroTatuadoresViewsets(viewsets.ModelViewSet):
-    queryset=RegistroTatuadores.objects.all()
-    serializer_class=RegistroTatuadoresSerializers
+   #API GET DATA USERS
+@api_view(http_method_names=["GET"])
+def getUsers (request:Request):
+    users = models.Users.objects.all()
 
-class RegistroDepartamentosViewsets(viewsets.ModelViewSet):
-    queryset = Departamentos.objects.all()
-    serializer_class = RegistroDepartamentoserializers
+    serializer = serializers.UsersModelSerializers(instance = users, many = True)
 
-class RegistroLocalidadesViewsets(viewsets.ModelViewSet):
-    queryset = Localidades.objects.all()
-    serializer_class = RegistroLocalidadeserializers
+    return Response(data = serializer.data, status= status.HTTP_200_OK)
+
+#API GET DATA USER WITCH ID_USER
+@api_view(http_method_names=["GET"])
+def getUser(request:Request , post_id:int):
+    users = get_list_or_404(models.Users, pk=post_id)
+
+    serializer = serializers.UsersModelSerializers(instance=users, many = True)
+
+    response = {
+        "massage" : "resulted",
+        "data" : serializer.data ,
+        "status" : status.HTTP_200_OK
+    }
+
+    return Response(data = response, status = status.HTTP_200_OK)
+
+#API POST USERS
+@api_view(http_method_names=["POST"])
+def postUser (request:Request):
+    users = models.Users.objects.all()
+
+    if request.method == "POST":
+        data = request.data
+
+        serializer = serializers.UsersSerializers(data = data , many = True)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            response = {
+                "massage": "create register of user",
+                "data" : serializer.data
+            }
+
+            return Response(data = response, status= status.HTTP_201_CREATED )
+
+        return Response(data = serializer.errors, status= status.HTTP_400_BAD_REQUEST)
+
+class Login(APIView):
+    permission_classes = []
+
+    def post(self, request:Request):
+        email = request.data.get('email'),
+        password = request.data.get('password')
+
+        user = authenticate(email=email, password = password)
+
+        if user is not None:
+            response = {
+                "message" : "login sucessful",
+                "token" : user.auth_token.key
+            }
+            return Response(data = response, status = status.HTTP_200_OK)
+        else:
+            return Response(data = {"messsage":"invalid email or password"})
+
+    def get(self, request : Request):
+        content = {
+            "user":str(request.user),
+            "auth":str(request.auth)
+        }
+
+        return Response(data= content, status= status.HTTP_200_OK)
+
+class signup(APIView):
+    permission_classes = []
+    serializer_class = serializers.UsersModelSerializers
+
+    def post(self, request:Request):
+        data = request.data
+
+        serializer = self.serializer_class(data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+
+            response = {
+                "massage":"user created exist",
+                "data" : serializer.data
+            }
+
+            return Response (data=response, status= status.HTTP_200_OK)
+            
+        return Response (
+            data={"message":"error in the request","status":status.HTTP_400_BAD_REQUEST}, 
+            status=status.HTTP_400_BAD_REQUEST)
+        
+
+        
+

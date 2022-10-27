@@ -1,16 +1,14 @@
-from rest_framework import routers
-from django.urls import path , include
-from .views import  *
-
-router = routers.DefaultRouter()
-router.register('RegistroTatuadores',RegistroTatuadoresViewsets)
-router.register('RegistroUsuario',RegistroUsuarioViewsets)
-router.register('Registro Departamentos',RegistroDepartamentosViewsets)
-router.register('Registro Localidades',RegistroLocalidadesViewsets)
-router.register('agendar citas',CitasViewsets)
-router.register('portafolio tatuadores',PortafolioTatuadoresViewsets )
+#Libraries
+from django.conf.urls import include
+from django.urls import path
+from . import views
+from rest_framework.routers import DefaultRouter
 
 
 urlpatterns = [
-    path('api/',include(router.urls), name="api")
+    path("signUp/", views.signup.as_view(), name="signUp"),
+    path("postUser/", views.postUser, name="postUser"),
+    path("getUsers/", views.getUsers, name="getUser"),
+    path("login/", views.Login.as_view(), name="login")
+    
 ]

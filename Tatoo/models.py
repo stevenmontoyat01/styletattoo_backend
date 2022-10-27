@@ -1,76 +1,84 @@
 from datetime import datetime
 from email.policy import default
+from tkinter import image_names
 from django.db import models
 from .choices import generos
 
-class Departamentos (models.Model):
-    nombre = models.CharField(max_length=50)
+#Table departament (departamentos)
+class Departament (models.Model):
+    Name = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.nombre
-
-class Localidades(models.Model):
-    fk_departamento = models.ForeignKey(Departamentos, on_delete=models.CASCADE)
-    nombre = models.CharField(max_length=30)
-
-    def __str__(self) -> str:
-        return self.nombre
-class RegistroUsuarios (models.Model):
-    id_user = models.BigAutoField(primary_key=True)
-    nombre = models.CharField(max_length=50)
-    apellido = models.CharField(max_length=50)
-    telefono = models.TextField()
-    email = models.TextField(max_length=90)
-    contraseña = models.TextField(max_length=20)
-    rol = models.CharField(default='U',max_length=1)
-    estado = models.CharField(default='A', max_length=1)
-
-    def nombre_Usuario(self):
-        return "{} {}".format(self.nombre,self.apellido)
+        return self.Name
+#Table Locaties (localidades o ciudades)
+class Locaties(models.Model):
+    Fk_departament = models.ForeignKey(Departament, on_delete=models.CASCADE)
+    Name = models.CharField(max_length=30)
 
     def __str__(self):
-        return self.nombre_Usuario()
+        return self.Name
+#Table Users (usuarios)
+class Users (models.Model):
+    Id_user = models.BigAutoField(primary_key=True)
+    Name = models.CharField(max_length=50)
+    LastName = models.CharField(max_length=50)
+    CellPhone = models.TextField()
+    Email = models.TextField(max_length=90)
+    Password = models.TextField(max_length=20)
+    Rol = models.CharField(default='[ROLE_USUARIO]',max_length=20)
+    image = models.ImageField()
+    Condition = models.CharField(default=1, max_length=1)
 
-class RegistroTatuadores (models.Model):
-    id_tatuador = models.BigAutoField(primary_key=True)
-    nombre = models.CharField(max_length=50)
-    apellido = models.CharField(max_length=50)
-    telefono = models.TextField()
-    departamento = models.ForeignKey(Departamentos, on_delete=models.CASCADE)
-    ciudad = models.ForeignKey(Localidades, on_delete=models.CASCADE)
-    direccion = models.TextField()
-    email = models.TextField(max_length=90)
-    experiencia = models.CharField(max_length=3)
-    descripcion=models.TextField(max_length=150,blank=True,default='')
-    contraseña = models.TextField(max_length=20)
-    rol = models.CharField(default='T',max_length=1)
-    estado = models.CharField(default='A', max_length=1)
-
-    def nombre_Tatuador(self):
-        return "{} {}".format(self.nombre,self.apellido)
+    def name_User(self):
+        return "{} {}".format(self.Name,self.LastName)
 
     def __str__(self):
-        return self.nombre_Tatuador()
+        return self.name_User()
 
-class Citas(models.Model):
-    id_cita = models.BigAutoField(primary_key=True)
-    Tatuador = models.ForeignKey(RegistroTatuadores, on_delete=models.CASCADE)
-    usuario = models.ForeignKey(RegistroUsuarios, on_delete=models.CASCADE)
-    Fecha = models.DateField()
-    Hora = models.TimeField()
-    Imagen = models.ImageField()
-    Descripcion = models.CharField(max_length=150, blank=False, default='')
+#Table Tattoo artist (Tatuadores)
+class Tattoo_artist (models.Model):
+    Id_artist = models.BigAutoField(primary_key=True)
+    Name = models.CharField(max_length=50)
+    LastName = models.CharField(max_length=50)
+    Cellphone = models.TextField()
+    Departament = models.ForeignKey(Departament, on_delete=models.CASCADE)
+    Locaties = models.ForeignKey(Locaties, on_delete=models.CASCADE)
+    Direction = models.TextField()
+    Email = models.TextField(max_length=90)
+    Experience = models.CharField(max_length=3)
+    Description=models.TextField(max_length=150,blank=True,default='')
+    Password = models.TextField(max_length=20)
+    Rol = models.CharField(default='[ROLE_TATUADOR]',max_length=20)
+    image = models.ImageField()
+    Condition = models.CharField(default='A', max_length=1)
 
+    def name_artist(self):
+        return "{} {}".format(self.Name,self.LastName)
 
-class Portafolio_Tatuadores(models.Model):
-    id_publicacion = models.BigAutoField(primary_key=True)
-    fecha_publicacion=models.DateTimeField(default=datetime.now())
-    tatuador=models.ForeignKey(RegistroTatuadores, on_delete=models.CASCADE)
-    imagen=models.ImageField()
-    descripcion=models.TextField(max_length=150,blank=True,default='')
+    def __str__(self):
+        return self.name_artist()
 
+#Table quotes (citas)
+class Quotes(models.Model):
+    Id_quotes = models.BigAutoField(primary_key=True)
+    Tattoo_artist = models.ForeignKey(Tattoo_artist, on_delete=models.CASCADE)
+    User = models.ForeignKey(Users, on_delete=models.CASCADE)
+    Date = models.DateField()
+    Time = models.TimeField()
+    Img = models.ImageField()
+    Description = models.CharField(max_length=150, blank=False, default='')
+
+#Table brifcase_artist (portafolio tatuador)
+class briefcase_artist(models.Model):
+    Id_briefcase = models.BigAutoField(primary_key=True)
+    Date_publication = models.DateTimeField(default=datetime.now())
+    Tattoo_artist = models.ForeignKey(Tattoo_artist, on_delete=models.CASCADE)
+    Img = models.ImageField()
+    Description = models.TextField(max_length=150,blank=True,default='')
+
+#Table likes (me gustas)
 class likes(models.Model):
-    id_likes = models.BigAutoField(primary_key=True)
-    fk_tatuador = models.ForeignKey(RegistroTatuadores, on_delete=models.CASCADE)
-    likes = models.IntegerField()
+    Id_likes = models.BigAutoField(primary_key=True)
+    Tattoo_artist = models.ForeignKey(Tattoo_artist, on_delete=models.CASCADE)
+    Counter_likes = models.IntegerField()
 

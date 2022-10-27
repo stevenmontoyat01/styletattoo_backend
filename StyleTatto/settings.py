@@ -1,11 +1,7 @@
-from email.policy import default
 import os
 import dj_database_url
 from pathlib import Path
-from sys import api_version
-from webbrowser import get
-from django.conf.global_settings import LANGUAGES as DJANGO_LANGUAGES
-
+from django.conf.global_settings import LANGUAGES 
 
 
 # Quick-start development settings - unsuitable for production
@@ -36,6 +32,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Tatoo',
     'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework.authtoken',
     'colorfield'
 ]
 
@@ -52,6 +50,16 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'StyleTatto.urls'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated', )
+}
 
 TEMPLATES = [
     {
@@ -70,7 +78,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'StyleTatto.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -236,5 +243,3 @@ JAZZMIN_SETTINGS = {
     # (deben estar presentes en archivos estáticos) "custom_css": None,
     "custom_js": None,
 }    
-
-
